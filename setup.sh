@@ -42,7 +42,7 @@ After=network.target
 [Service]
 Type=simple
 WorkingDirectory=$PROJECT_DIR
-ExecStart=$(poetry env info --path) app:app --host 0.0.0.0 --port 8000 --uds /tmp/snipper.sock --workers $(($(nproc) * 2 + 1)) --env-file .env --access-log --use-colors --no-server-header --proxy-headers
+ExecStart=$(poetry env info --path)/bin/uvicorn app:app --host 0.0.0.0 --port 8000 --uds /tmp/snipper.sock --workers $(($(nproc) * 2 + 1)) --env-file .env --access-log --use-colors --no-server-header --proxy-headers
 Restart=always
 User=$USER
 Group=$USER

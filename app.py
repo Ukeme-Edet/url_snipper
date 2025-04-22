@@ -7,7 +7,7 @@ import os
 app = create_app()
 origins = [
     "http://localhost:3000",
-    "https://your-production-domain.com",
+    "https://snipper.0xtech-wiz.me",
 ]
 app.add_middleware(
     CORSMiddleware,

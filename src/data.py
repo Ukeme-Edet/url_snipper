@@ -44,4 +44,16 @@ async def init_models():
         await conn.run_sync(Base.metadata.create_all)
 
 
-asyncio.run(init_models())
+if __name__ == "__main__":
+    import asyncio
+
+    asyncio.run(init_models())
+else:
+    import asyncio
+
+    try:
+        loop = asyncio.get_running_loop()
+        loop.create_task(init_models())
+    except RuntimeError:
+        # No running event loop
+        asyncio.run(init_models())

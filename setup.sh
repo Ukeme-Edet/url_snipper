@@ -42,13 +42,14 @@ After=network.target
 [Service]
 Type=simple
 WorkingDirectory=$PROJECT_DIR
-ExecStart=$PROJECT_DIR/venv/bin/uvicorn app:app --host 0.0.0.0 --port 8000 --uds /tmp/snipper.sock --workers $(($(nproc) * 2 + 1)) --env-file .env --access-log --use-colors --no-server-header --proxy-headers
+ExecStart=$(poetry env info --path) app:app --host 0.0.0.0 --port 8000 --uds /tmp/snipper.sock --workers $(($(nproc) * 2 + 1)) --env-file .env --access-log --use-colors --no-server-header --proxy-headers
 Restart=always
 User=$USER
 Group=$USER
 Environment=PYTHONUNBUFFERED=1
-Environment=PYTHONPATH=$PROJECT_DIR
-Environment=PATH=$PROJECT_DIR/venv/bin
+Environment=PYTHONPATH=$(poetry env info --path)/lib/python3.*/site-packages
+Environment=PATH=$(poetry env info --path)/bin:$PATH
+Environment=VIRTUAL_ENV=$(poetry env info --path)
 
 [Install]
 WantedBy=multi-user.target

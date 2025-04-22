@@ -1,4 +1,5 @@
-from sqlalchemy.orm import Session
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 from src.data import Snipper, engine
 
 
@@ -7,25 +8,40 @@ class SnipperService:
         """
         Initialize SnipperService
         """
-        self.session = Session(engine)
 
-    def get_snipper(self, snipper_id):
+    async def get_snipper_by_id(self, snipper_id):
         """
         Get snipper by id
 
         Args:
         snipper_id: str: Snipper id
 
-        Returns:
+        return:
         Snipper: Snipper object
         """
-        return (
-            self.session.query(Snipper)
-            .filter(Snipper.id == snipper_id)
-            .first()
-        )
+        async with AsyncSession(engine) as session:
+            result = await session.execute(
+                select(Snipper).where(Snipper.id == snipper_id)
+            )
+            return result.scalars().first()
 
-    def create_snipper(self, url, ip):
+    async def get_snipper_by_url(self, url):
+        """
+        Get snipper by url
+
+        Args:
+        url: str: Snipper url
+
+        return:
+        Snipper: Snipper object
+        """
+        async with AsyncSession(engine) as session:
+            result = await session.execute(
+                select(Snipper).where(Snipper.url == url)
+            )
+            return result.scalars().first()
+
+    async def create_snipper(self, url, ip):
         """
         Create snipper
 
@@ -33,27 +49,29 @@ class SnipperService:
         url: str: Snipper url
         ip: str: Snipper ip
 
-        Returns:
+        return:
         Snipper: Snipper object
         """
-        snipper = Snipper(url=url, ip=ip)
-        self.session.add(snipper)
-        self.session.commit()
-        return snipper
+        async with AsyncSession(engine) as session:
+            snipper = Snipper(url=url, ip=ip)
+            session.add(snipper)
+            await session.commit()
+            await session.refresh(snipper)
+            return snipper
 
-    def delete_snipper(self, snipper_id):
-        snipper = self.get_snipper(snipper_id)
-        self.session.delete(snipper)
-        self.session.commit()
-
-    def get_all_snippers(self):
+    async def delete_snipper(self, snipper_id):
+        async with AsyncSession(engine) as session:
+            snipper = await self.get_snipper_by_id(snipper_id)
+            if snipper:
+                await session.delete(snipper)
+                await session.commit()
+    async def get_all_snippers(self):
         """
         Get all snippers
 
-        Returns:
+        return:
         list: List of Snipper objects
         """
-        return self.session.query(Snipper).all()
-
-    def __del__(self):
-        self.session.close()
+        async with AsyncSession(engine) as session:
+            result = await session.execute(select(Snipper))
+            return result.scalars().all()

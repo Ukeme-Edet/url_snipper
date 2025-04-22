@@ -34,7 +34,6 @@ engine = create_async_engine("sqlite+aiosqlite:///snippers.db")
 AsyncSessionLocal = sessionmaker(
     bind=engine, class_=AsyncSession, expire_on_commit=False
 )
-engine = create_async_engine("sqlite+aiosqlite:///snippers.db")
 
 # To create tables asynchronously:
 import asyncio

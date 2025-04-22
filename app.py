@@ -16,21 +16,20 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.include_router(api, prefix="/api")
 
 
 @app.get("/")
-def read_root():
+async def read_root():
     return {"Hello": "World"}
 
 
 @app.get("/health")
-def health_check():
+async def health_check():
     return {"status": "ok"}
 
 
 @app.get("/ping")
-def ping():
+async def ping():
     return {"ping": "pong"}
 
 
@@ -42,4 +41,9 @@ if __name__ == "__main__":
         host="0.0.0.0",
         port=8000,
         workers=os.cpu_count() * 2 + 1,
+        server_header=False,
+        proxy_headers=True,
+        forwarded_allow_ips="*",
+        log_level="info",
+        use_colors=True,
     )

@@ -10,6 +10,7 @@ readme = "README.md"
 python = "^3.12"
 fastapi = "^0.115.12"
 sqlalchemy = "^2.0.40"
+aiosqlite = "^0.21.0"
 
 
 [build-system]

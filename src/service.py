@@ -64,7 +64,7 @@ class SnipperService:
             snipper = await self.get_snipper_by_id(snipper_id)
             if snipper:
                 await session.delete(snipper)
-
+                await session.commit()
     async def get_all_snippers(self):
         """
         Get all snippers

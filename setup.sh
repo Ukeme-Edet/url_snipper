@@ -19,18 +19,18 @@ sudo apt-get install -y python3 python3-pip python3-venv sqlite3 libsqlite3-dev 
 # Create virtual environment
 sudo apt-get update
 cd "$PROJECT_DIR"
-python3 -m venv venv
-source venv/bin/activate
 
 # Install Poetry in venv if not present
 if ! venv/bin/poetry --version &>/dev/null; then
     echo "Poetry not found, installing..."
-    pip install poetry
+    curl -sSL https://install.python-poetry.org | python3 -
+    export PATH="$HOME/.local/bin:$PATH"
+    poetry env activate
 fi
 
 # Install project dependencies
 echo "Installing project dependencies..."
-venv/bin/poetry install
+poetry install
 
 # Create systemd service file
 echo "Creating systemd service file..."

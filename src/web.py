@@ -12,7 +12,9 @@ async def read_root():
 
 @api.post("/shorten")
 async def create_snipper(request: Request, snipper: SnipperIn):
-    return await controller.create_snipper(snipper.url, request.client.host)
+    return await controller.create_snipper(
+        snipper.url, request.headers.get("X-Forwarded-For")
+    )
 
 
 @api.get("/expand/{snipper_id}")
